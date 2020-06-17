@@ -1,0 +1,7 @@
+{
+  "conf":{
+    "k8sAuth":{
+      "file": "/Users/dasouche/.kube/config"
+    }
+  }
+}

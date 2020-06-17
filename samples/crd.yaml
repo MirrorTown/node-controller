@@ -1,0 +1,21 @@
+apiVersion: apiextensions.k8s.io/v1beta1
+kind: CustomResourceDefinition
+metadata:
+  name: virtulmachines.nodecontroller.k8s.io
+spec:
+  group: nodecontroller.k8s.io
+  names:
+    kind: VirtulMachine
+    listKind: VirtulMachineList
+    plural: virtulmachines
+    singular: virtulmachine
+    shortNames:
+      - vm
+  scope: Namespaced
+  subresources:
+    status: {}
+  version: v1alpha1
+  versions:
+    - name: v1alpha1
+      served: true
+      storage: true

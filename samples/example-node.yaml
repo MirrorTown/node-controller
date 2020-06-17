@@ -1,0 +1,10 @@
+apiVersion: nodecontroller.k8s.io/v1alpha1
+kind: VirtulMachine
+metadata:
+  name: example-virtulmachine
+  namespace: default
+spec:
+  providerID: example-virtulmachine
+  taints:
+    - key: nodecontroller.kubernetes.io/woker
+      effect: NoSchedule
