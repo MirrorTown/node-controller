@@ -22,6 +22,7 @@ var (
 	kubeClient                kubernetes.Interface
 	CoreSharedInformerFactory informers.SharedInformerFactory
 	PodInformer               coreinformers.PodInformer
+	WorkerInformer            coreinformers.NodeInformer
 )
 
 const LOCAL = "local"
@@ -106,6 +107,7 @@ func InitInformer() {
 
 	// 创建 informers
 	PodInformer = CoreSharedInformerFactory.Core().V1().Pods()
+	WorkerInformer = CoreSharedInformerFactory.Core().V1().Nodes()
 }
 
 func InitKubeClient() kubernetes.Interface {

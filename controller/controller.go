@@ -26,3 +26,8 @@ func (c *VirtulMachineController) PodListener() {
 	plc := BuildPodListenerController(c.KubeClientSet)
 	plc.Run(c.Stop)
 }
+
+func (c *VirtulMachineController) WorkerListener() {
+	wlc := BuildK8sWorkerController(c.KubeClientSet)
+	wlc.Run(c.Stop)
+}

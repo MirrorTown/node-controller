@@ -2,9 +2,7 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"github.com/astaxie/beego"
-	"k8s.io/apimachinery/pkg/labels"
 	"node-controller/conf"
 	"node-controller/controller"
 	nodeInformer "node-controller/generated/informers/externalversions"
@@ -26,15 +24,14 @@ func main() {
 		Stop:                      stop,
 	}
 
-	c.PodListener()
+	//c.PodListener()
+	c.WorkerListener()
 	go c.CoreSharedInformerFactory.Start(stop)
 
 	c.VirtulMachineListener()
 	go func() {
 		time.Sleep(time.Duration(5) * time.Second)
 		c.SharedInformerFactory.Start(stop)
-		fmt.Println("List: ")
-		fmt.Println(c.SharedInformerFactory.Nodecontroller().V1alpha1().VirtulMachines().Lister().List(labels.Everything()))
 	}()
 
 	if beego.BConfig.RunMode == "dev" {
