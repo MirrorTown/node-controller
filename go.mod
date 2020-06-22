@@ -6,6 +6,7 @@ require (
 	github.com/astaxie/beego v1.12.1
 	github.com/certifi/gocertifi v0.0.0-20200211180108-c7c1fbc02894 // indirect
 	github.com/getsentry/raven-go v0.2.0
+	github.com/go-sql-driver/mysql v1.4.1
 	github.com/iresty/ingress-controller v0.0.0-20200607064931-f2a806c0e5af // indirect
 	github.com/shiena/ansicolor v0.0.0-20151119151921-a422bbe96644 // indirect
 	github.com/tidwall/gjson v1.3.5

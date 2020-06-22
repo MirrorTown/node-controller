@@ -6,6 +6,8 @@ import (
 	"node-controller/conf"
 	"node-controller/controller"
 	nodeInformer "node-controller/generated/informers/externalversions"
+	"node-controller/initial"
+	_ "node-controller/models"
 	_ "node-controller/routers"
 	"time"
 )
@@ -38,6 +40,8 @@ func main() {
 		beego.BConfig.WebConfig.DirectoryIndex = true
 		beego.BConfig.WebConfig.StaticDir["/swagger"] = "swagger"
 	}
+
+	initial.InitDb()
 
 	beego.Run()
 }

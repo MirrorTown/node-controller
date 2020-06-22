@@ -84,7 +84,7 @@ func BuildK8sWorkerController(kubeclientset kubernetes.Interface) *K8sWorkerCont
 		podList:       conf.PodInformer.Lister(),
 		workerList:    conf.WorkerInformer.Lister(),
 		workerSynced:  conf.WorkerInformer.Informer().HasSynced,
-		workqueue:     workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "podlistener"),
+		workqueue:     workqueue.NewNamedRateLimitingQueue(workqueue.DefaultControllerRateLimiter(), "k8sworkerlistener"),
 	}
 
 	conf.WorkerInformer.Informer().AddEventHandler(
@@ -258,6 +258,7 @@ func (c *K8sWorkerController) sync(rqo *K8sWorkerQueueObj) error {
 		fmt.Println("update")
 		return nil
 	case rqo.Ope == common.DELETE:
+		//TODO worker节点宕机的告警通知
 		fmt.Println("delete")
 		return nil
 	default:
