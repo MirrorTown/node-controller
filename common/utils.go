@@ -9,9 +9,9 @@ import (
 	"time"
 )
 
-type Text struct {
-	Title   string `json:"title"`
-	Content string `json:"content"`
+type Markdown struct {
+	Title string `json:"title"`
+	Text  string `json:"text"`
 }
 
 type At struct {
@@ -46,14 +46,14 @@ func Send2Hook(content []Ready2Send, now string, t string, url string) {
 		for _, i := range content {
 			data, _ := json.Marshal(
 				struct {
-					Msgtype string `json:"msgtype"`
-					Text    Text   `json:"text"`
-					At      At     `json:"at"`
+					Msgtype  string   `json:"msgtype"`
+					Markdown Markdown `json:"markdown"`
+					At       At       `json:"at"`
 				}{
-					Msgtype: "text",
-					Text: Text{
-						Title:   i.Title,
-						Content: i.Alerts,
+					Msgtype: "markdown",
+					Markdown: Markdown{
+						Title: i.Title,
+						Text:  i.Alerts,
 					},
 					At: At{
 						AtMobiles: i.User,
@@ -64,24 +64,26 @@ func Send2Hook(content []Ready2Send, now string, t string, url string) {
 		}
 	} else {
 		for _, i := range content {
-			i.Alerts = i.Alerts + "===" + beego.AppConfig.String("WebUrl") + "/alerts_confirm/" + "?start=" + i.Start
+			i.Alerts = "- [告警名称] " + i.Title + "\n" +
+				"- [K8s事件]" + i.Alerts + "\n" +
+				"- [操作确认]" + "(" + beego.AppConfig.String("WebUrl") + "/alerts_confirm/" + "?start=" + i.Start + ")"
 			data, _ := json.Marshal(
 				struct {
-					Msgtype string `json:"msgtype"`
-					Text    Text   `json:"text"`
-					At      At     `json:"at"`
+					Msgtype  string   `json:"msgtype"`
+					Markdown Markdown `json:"markdown"`
+					At       At       `json:"at"`
 				}{
-					Msgtype: "text",
-					Text: Text{
-						Title:   i.Title,
-						Content: i.Alerts,
+					Msgtype: "markdown",
+					Markdown: Markdown{
+						Title: i.Title,
+						Text:  i.Alerts,
 					},
 					At: At{
 						AtMobiles: i.User,
 						IsAtAll:   "false",
 					},
 				})
-			HttpPost(url, nil, nil, data)
+			HttpPost(url, nil, map[string]string{"Content-Type": "application/json"}, data)
 			time.Sleep(1 * time.Second)
 		}
 	}
