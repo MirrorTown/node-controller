@@ -60,7 +60,7 @@ func Send2Hook(content []Ready2Send, now string, t string, url string) {
 						IsAtAll:   "false",
 					},
 				})
-			HttpPost(url, nil, nil, data)
+			HttpPost(url, nil, map[string]string{"Content-Type": "application/json"}, data)
 		}
 	} else {
 		for _, i := range content {
