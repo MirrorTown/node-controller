@@ -244,25 +244,24 @@ func (c *K8sWorkerController) sync(rqo *K8sWorkerQueueObj) error {
 		return fmt.Errorf("invalid resource key: %s", key)
 	}
 
-	worker, err := c.workerList.Get(name)
-	if err != nil {
-		if errors.IsNotFound(err) {
-			logs.Info("vm %s is removed", key)
-			return nil
-		}
-		runtime.HandleError(fmt.Errorf("failed to list vm %s/%s", key, err.Error()))
-		return err
-	}
-	//fmt.Println(worker.Name, worker.Status.Conditions[0].Type, worker.Status.Conditions[0].Status, worker.Status.Conditions[1].Type, worker.Status.Conditions[1].Status)
 	switch {
 	case rqo.Ope == common.UPDATE:
-		//fmt.Println("update")
+		worker, err := c.workerList.Get(name)
+		if err != nil {
+			if errors.IsNotFound(err) {
+				logs.Info("vm %s is removed", key)
+				return nil
+			}
+			runtime.HandleError(fmt.Errorf("failed to list vm %s/%s", key, err.Error()))
+			return err
+		}
+		fmt.Println(worker.Name, worker.Status.Conditions[0].Type, worker.Status.Conditions[0].Status, worker.Status.Conditions[1].Type, worker.Status.Conditions[1].Status)
 		return nil
 	case rqo.Ope == common.DELETE:
 		//TODO worker节点宕机的告警通知
 		record := &models.Record{
 			User:        "",
-			HostName:    worker.Name,
+			HostName:    name,
 			Description: "worker节点从k8s集群失联",
 			Status:      0,
 			CreateTime:  nil,

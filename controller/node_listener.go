@@ -205,18 +205,18 @@ func (n *VirtulMachineListenerController) sync(rqo *VirtulMachineQueueObj) error
 		return fmt.Errorf("invalid resource key: %s", key)
 	}
 
-	node, err := n.nodeList.VirtulMachines(namespace).Get(name)
-	if err != nil {
-		if errors.IsNotFound(err) {
-			logs.Info("vm %s is removed", key)
-			return nil
-		}
-		runtime.HandleError(fmt.Errorf("failed to list vm %s/%s", key, err.Error()))
-		return err
-	}
-	fmt.Println(node.Name, node.Status.Phase)
 	switch {
 	case rqo.Ope == common.UPDATE:
+		node, err := n.nodeList.VirtulMachines(namespace).Get(name)
+		if err != nil {
+			if errors.IsNotFound(err) {
+				logs.Info("vm %s is removed", key)
+				return nil
+			}
+			runtime.HandleError(fmt.Errorf("failed to list vm %s/%s", key, err.Error()))
+			return err
+		}
+		fmt.Println(node.Name, node.Status.Phase)
 		fmt.Println("update")
 		return nil
 	case rqo.Ope == common.DELETE:

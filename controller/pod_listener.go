@@ -200,18 +200,18 @@ func (c *PodListenerController) sync(rqo *PodQueueObj) error {
 		return fmt.Errorf("invalid resource key: %s", key)
 	}
 
-	pod, err := c.podList.Pods(namespace).Get(name)
-	if err != nil {
-		if errors.IsNotFound(err) {
-			logs.Info("vm %s is removed", key)
-			return nil
-		}
-		runtime.HandleError(fmt.Errorf("failed to list vm %s/%s", key, err.Error()))
-		return err
-	}
-	fmt.Println(pod.Name, pod.Status.Phase)
 	switch {
 	case rqo.Ope == common.UPDATE:
+		pod, err := c.podList.Pods(namespace).Get(name)
+		if err != nil {
+			if errors.IsNotFound(err) {
+				logs.Info("vm %s is removed", key)
+				return nil
+			}
+			runtime.HandleError(fmt.Errorf("failed to list vm %s/%s", key, err.Error()))
+			return err
+		}
+		fmt.Println(pod.Name, pod.Status.Phase)
 		fmt.Println("update")
 		return nil
 	case rqo.Ope == common.DELETE:
