@@ -14,6 +14,7 @@ import (
 	"k8s.io/client-go/util/workqueue"
 	"node-controller/common"
 	"node-controller/conf"
+	"node-controller/models"
 	"node-controller/util/logs"
 	"sort"
 	"strconv"
@@ -252,13 +253,25 @@ func (c *K8sWorkerController) sync(rqo *K8sWorkerQueueObj) error {
 		runtime.HandleError(fmt.Errorf("failed to list vm %s/%s", key, err.Error()))
 		return err
 	}
-	fmt.Println(worker.Name, worker.Status.Conditions[0].Type, worker.Status.Conditions[0].Status, worker.Status.Conditions[1].Type, worker.Status.Conditions[1].Status)
+	//fmt.Println(worker.Name, worker.Status.Conditions[0].Type, worker.Status.Conditions[0].Status, worker.Status.Conditions[1].Type, worker.Status.Conditions[1].Status)
 	switch {
 	case rqo.Ope == common.UPDATE:
-		fmt.Println("update")
+		//fmt.Println("update")
 		return nil
 	case rqo.Ope == common.DELETE:
 		//TODO worker节点宕机的告警通知
+		record := &models.Record{
+			User:        "",
+			HostName:    worker.Name,
+			Description: "worker节点从k8s集群失联",
+			Status:      0,
+			CreateTime:  nil,
+			UpdateTime:  nil,
+		}
+		err := models.RecordMode.Add(record)
+		if err != nil {
+			logs.Error("记录告警记录失败, ", err)
+		}
 		fmt.Println("delete")
 		return nil
 	default:
