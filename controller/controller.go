@@ -30,4 +30,6 @@ func (c *VirtulMachineController) PodListener() {
 func (c *VirtulMachineController) WorkerListener() {
 	wlc := BuildK8sWorkerController(c.KubeClientSet)
 	wlc.Run(c.Stop)
+
+	go wlc.cacheNodeList()
 }

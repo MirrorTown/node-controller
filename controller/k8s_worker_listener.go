@@ -21,6 +21,8 @@ import (
 	"time"
 )
 
+var NodeList *NodeListResult
+
 type K8sWorkerController struct {
 	kubeClientset kubernetes.Interface
 	podList       CoreListerV1.PodLister
@@ -275,6 +277,20 @@ func (c *K8sWorkerController) sync(rqo *K8sWorkerQueueObj) error {
 		return nil
 	default:
 		return fmt.Errorf("not expected in (WorkerController) sync")
+	}
+}
+
+func (c *K8sWorkerController) cacheNodeList() {
+	defer func() {
+		if err := recover(); err != nil {
+			logs.Error(err)
+		}
+	}()
+
+	for range time.Tick(time.Second * 60) {
+		current := time.Now()
+		time.Sleep(time.Duration(60-current.Second()) * time.Second)
+		NodeList, _ = c.ListNode()
 	}
 }
 

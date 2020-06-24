@@ -1,10 +1,11 @@
-package pkg
+package routers
 
 import (
 	"github.com/astaxie/beego"
 	"github.com/astaxie/beego/context"
 	"github.com/astaxie/beego/plugins/cors"
 	"net/http"
+	"node-controller/controller/kubernetes/worker"
 	"node-controller/util/hack"
 )
 
@@ -22,4 +23,12 @@ func init() {
 		ctx.Output.SetStatus(http.StatusOK)
 		ctx.Output.Body(hack.Slice("ok"))
 	})
+
+	nsWithK8sWorker := beego.NewNamespace("/api/v1/k8s",
+		beego.NSNamespace("/worker",
+			beego.NSInclude(&worker.WorkerController{}),
+		),
+	)
+
+	beego.AddNamespace(nsWithK8sWorker)
 }
