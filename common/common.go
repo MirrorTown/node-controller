@@ -76,5 +76,7 @@ func HttpGet(url string, params map[string]string, headers map[string]string) (*
 	//http client
 	client := &http.Client{Timeout: 5 * time.Second} //Add the timeout,the reason is that the default client has no timeout set; if the remote server is unresponsive, you're going to have a bad day.
 	resp, err := client.Do(req)
+
+	defer resp.Body.Close()
 	return resp, err
 }
